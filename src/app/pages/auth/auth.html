@@ -8,16 +8,18 @@
 <div class="tabs">
   <button
     [class.active]="isLogin"
-    (click)="isLogin = true">
+    (click)="isLogin = true; error = ''">
     Log In
   </button>
 
   <button
     [class.active]="!isLogin"
-    (click)="isLogin = false">
+    (click)="isLogin = false; error = ''">
     Sign Up
   </button>
 </div>
+
+<p *ngIf="error" style="color:#ffb3c7;font-size:14px;margin:8px 0;text-align:center">{{ error }}</p>
 
 <form *ngIf="isLogin">
 
@@ -31,8 +33,8 @@
     <input type="password" [(ngModel)]="password" name="password" placeholder="••••••••">
   </div>
 
-  <button type="button" class="btn-full" (click)="submit()">
-    Log In →
+  <button type="button" class="btn-full" (click)="submit()" [disabled]="loading">
+    {{ loading ? 'Please wait...' : 'Log In →' }}
   </button>
 
 </form>
@@ -54,8 +56,8 @@
     <input type="password" [(ngModel)]="password" name="password2" placeholder="••••••••">
   </div>
 
-  <button type="button" class="btn-full" (click)="submit()">
-    Create Account →
+  <button type="button" class="btn-full" (click)="submit()" [disabled]="loading">
+    {{ loading ? 'Please wait...' : 'Create Account →' }}
   </button>
 
 </form>
