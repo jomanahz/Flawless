@@ -7,6 +7,13 @@ export interface ScanRecord {
   photo: string | null;
 }
 
+export interface AiResult {
+  acneDetected: boolean;
+  acneLevel: string;
+  acneSeverityLevel: number;
+  confidence: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class SkinDataService {
 
@@ -15,6 +22,7 @@ export class SkinDataService {
 
   answers: (number | null)[] = [null, null, null, null, null];
   photo: string | null = null;
+  ai: AiResult | null = null;
 
   history: ScanRecord[] = [];
 
@@ -28,7 +36,8 @@ export class SkinDataService {
         userName: this.userName,
         userEmail: this.userEmail,
         answers: this.answers,
-        history: this.history
+        history: this.history,
+        ai: this.ai
       }));
     } catch {}
   }
@@ -42,6 +51,7 @@ export class SkinDataService {
       this.userEmail = d.userEmail ?? this.userEmail;
       this.answers = d.answers ?? this.answers;
       this.history = d.history ?? [];
+      this.ai = d.ai ?? null;
     } catch {}
   }
 
@@ -50,6 +60,7 @@ export class SkinDataService {
     this.userEmail = 'sara@example.com';
     this.answers = [null, null, null, null, null];
     this.photo = null;
+    this.ai = null;
     this.history = [];
     try { localStorage.removeItem('flawless'); } catch {}
   }
@@ -67,6 +78,11 @@ export class SkinDataService {
 
   savePhoto(dataUrl: string) {
     this.photo = dataUrl;
+  }
+
+  setAnalysis(r: AiResult | null | undefined) {
+    this.ai = r ?? null;
+    this.save();
   }
 
   saveScan() {
@@ -93,6 +109,7 @@ export class SkinDataService {
     if (this.answers[3] === 2) s -= 10;
     if (this.answers[3] === 3) s -= 16;
     if (this.answers[4] === 3) s -= 12;
+    if (this.ai) s -= Math.min(30, (Number(this.ai.acneSeverityLevel) || 0) * 10);
     return Math.max(40, Math.min(100, s));
   }
 
