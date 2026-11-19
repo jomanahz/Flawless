@@ -85,7 +85,7 @@ export class CameraComponent implements OnDestroy {
             this.router.navigate(['/auth']);
             return;
           }
-          this.fail(err?.error?.message || 'Analysis failed. Please try again.');
+          this.fail((err?.error?.message || 'Analysis failed. Please try again.') + (err?.error?.debug ? ' [' + err.error.debug + ']' : ''));
         }
       });
     }, 'image/jpeg', 0.9);
